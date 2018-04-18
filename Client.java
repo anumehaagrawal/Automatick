@@ -15,7 +15,7 @@ public class Client {
         try {
 
             socket = new Socket(address, port);
-            System.out.println("Successfully Connected to the server!\n");
+            System.out.println("CTRL + C to stop the Client\nSuccessfully Connected to the server!\n");
 
             input  = new DataInputStream(System.in);
             in_rec = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
@@ -35,6 +35,7 @@ public class Client {
                 try {
                     input.close();
                     socket.close();
+                    System.out.println("\nGracefully closed connection with Server.");
                 } catch (IOException e) {
                     System.out.println(e);
                 }
@@ -67,7 +68,9 @@ public class Client {
     }
 
     public static void main(String args[]) {
-        Client client = new Client("127.0.0.1", 5000);
+
+        Client client = new Client("127.0.0.1", Integer.parseInt(args[0], 10));
+
     }
 
 }
