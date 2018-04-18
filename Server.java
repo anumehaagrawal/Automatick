@@ -9,12 +9,12 @@ public class Server {
     private ServerSocket     server   = null;
     private DataOutputStream out      = null;
 
-    public Server(int port) {
+    public Server(int port, ArrayList<ArrayList<String>> msgList) {
 
         try {
 
             server = new ServerSocket(port);
-            System.out.println("Server up on port " + Integer.toString(port));
+            System.out.println("\nServer up on port " + Integer.toString(port));
             System.out.println("Waiting for a client...");
 
             socket = server.accept();
@@ -40,35 +40,24 @@ public class Server {
                 compareDateFormat.setTimeZone(TimeZone.getTimeZone("IST"));
                 displayDateFormat.setTimeZone(TimeZone.getTimeZone("IST"));
 
+                for (int msg = 0; msg < msgList.size(); msg++) {
 
-                if ((Integer.parseInt(compareDateFormat.format(date).substring(0, 2)) == 5) && 
-                    (Integer.parseInt(compareDateFormat.format(date).substring(3, 5)) == 24) &&
-                    (Integer.parseInt(compareDateFormat.format(date).substring(6, 8)) == 10)) {
+                    if ((compareDateFormat.format(date).substring(0, 2).equals(msgList.get(msg).get(1).substring(0, 2))) &&
+                        (compareDateFormat.format(date).substring(3, 5).equals(msgList.get(msg).get(1).substring(3, 5))) &&
+                        (compareDateFormat.format(date).substring(6, 8).equals(msgList.get(msg).get(1).substring(6, 8)))) {
 
-                    try {
+                        try {
 
-                        System.out.println(displayDateFormat.format(date) + "\n\tBot: " + response + '\n');
-                        out.writeUTF(response); 
+                            System.out.println(displayDateFormat.format(date) + "\n\tBot: " + msgList.get(msg).get(0) + '\n');
+                            out.writeUTF(msgList.get(msg).get(0));
 
-                    } catch (IOException e) {
-                        
-                        System.out.println(e);
-                    
+                        } catch (IOException e) {
+
+                            System.out.println(e);
+
+                        }
                     }
-                } else if ((Integer.parseInt(compareDateFormat.format(date).substring(0, 2)) == 5) && 
-                    (Integer.parseInt(compareDateFormat.format(date).substring(3, 5)) == 24) &&
-                    (Integer.parseInt(compareDateFormat.format(date).substring(6, 8)) == 30)) {
 
-                    try {
-
-                        System.out.println(displayDateFormat.format(date) + "\n\tBot: " + response + '\n');
-                        out.writeUTF(response); 
-
-                    } catch (IOException e) {
-                        
-                        System.out.println(e);
-                    
-                    }
                 }
 
                 try {
@@ -76,7 +65,7 @@ public class Server {
                     Thread.sleep(1000);
                 
                 } catch (Exception e) {
-                
+
                     System.out.println(e);
                 
                 }
@@ -92,7 +81,33 @@ public class Server {
     }
 
     public static void main(String args[]) {
-        Server server = new Server(5000);
+
+        Scanner numScanner = new Scanner(System.in);
+        Scanner stringScanner = new Scanner(System.in);
+
+        System.out.print("Enter number of messages: ");
+
+        int numMessages = numScanner.nextInt();
+        ArrayList<ArrayList<String>> messageList = new ArrayList<ArrayList<String>>();
+        ArrayList<String> tempList;
+        String message, dateAndTime;
+
+        for (int i = 0; i < numMessages; i++) {
+
+            tempList = new ArrayList<String>();
+            System.out.print("\nEnter the message: ");
+            message = stringScanner.nextLine();
+            System.out.print("\nEnter the date in HH:mm:ss format: ");
+            dateAndTime = stringScanner.nextLine();
+
+            tempList.add(message);
+            tempList.add(dateAndTime);
+            messageList.add(tempList);
+
+        }
+
+        Server server = new Server(5000, messageList);
+
     }
 
 }
