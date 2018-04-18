@@ -15,13 +15,14 @@ public class Server {
 
             server = new ServerSocket(port);
             System.out.println("\nServer up on port " + Integer.toString(port));
-            System.out.println("Waiting for a client...");
+            System.out.println("CTRL + C to stop the server\nWaiting for a client...");
 
             socket = server.accept();
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
                     try {
                         socket.close();
+                        System.out.println("\nGracefully closed connection with Client.");
                     } catch (IOException e) {
                         System.out.println(e);
                     }
@@ -106,7 +107,7 @@ public class Server {
 
         }
 
-        Server server = new Server(5000, messageList);
+        Server server = new Server(Integer.parseInt(args[0], 10), messageList);
 
     }
 
